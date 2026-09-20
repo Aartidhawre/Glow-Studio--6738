@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>
+
+Admin Login
+
+</title>
+
+<link
+rel="stylesheet"
+href="{{ url_for('static', filename='css/login.css') }}">
+
+<link
+rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link
+rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link
+href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<link
+rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="login-box">
+
+<h1>
+
+Admin Login
+
+</h1>
+
+<p>
+
+Radhika Malviya Makeup Studio
+
+</p>
+
+<form
+method="POST">
+
+<div class="input-box">
+
+<i class="fa-solid fa-user"></i>
+
+<input
+type="text"
+name="username"
+placeholder="Username"
+required>
+
+</div>
+
+<div class="input-box">
+
+<i class="fa-solid fa-lock"></i>
+
+<input
+type="password"
+name="password"
+placeholder="Password"
+required>
+
+</div>
+
+<button type="submit">
+
+Login
+
+</button>
+
+</form>
+
+{% with messages=get_flashed_messages(with_categories=true) %}
+
+{% if messages %}
+
+{% for category,message in messages %}
+
+<div class="flash {{category}}">
+
+{{message}}
+
+</div>
+
+{% endfor %}
+
+{% endif %}
+
+{% endwith %}
+
+</div>
+
+</body>
+
+</html>

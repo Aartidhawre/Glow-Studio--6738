@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+    <link rel="preconnect"
+          href="https://fonts.googleapis.com">
+
+    <link rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.css"
+          rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
+
+    <style>
+        .copy-payment-btn,
+        .email-btn {
+            border: none;
+            padding: 9px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 5px;
+            font-family: inherit;
+        }
+
+        .copy-payment-btn {
+            background: #6c63ff;
+            color: white;
+        }
+
+        .email-btn {
+            background: #555;
+            color: white;
+        }
+
+        .copy-payment-btn:hover,
+        .email-btn:hover {
+            opacity: 0.85;
+        }
+    </style>
+
+</head>
+
+
+<body>
+
+<!-- =========================
+     SIDEBAR
+========================= -->
+
+<div class="sidebar">
+
+    <h2>Radhika Makeup</h2>
+
+    <a href="/">
+        <i class="fa-solid fa-house"></i>
+        Website
+    </a>
+
+    <a href="/dashboard">
+        <i class="fa-solid fa-chart-line"></i>
+        Dashboard
+    </a>
+
+    <a href="/gallery">
+        <i class="fa-solid fa-images"></i>
+        Gallery
+    </a>
+
+    <a href="/reviews">
+        <i class="fa-solid fa-star"></i>
+        Reviews
+    </a>
+
+    <a href="/logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+        Logout
+    </a>
+
+</div>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<div class="main">
+
+    <h1>Admin Dashboard</h1>
+
+
+    <!-- FLASH MESSAGE -->
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- =========================
+         DASHBOARD CARDS
+    ========================= -->
+
+    <div class="cards">
+
+        <div class="card">
+            <h2>{{ total }}</h2>
+            <p>Total Bookings</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ pending }}</h2>
+            <p>Pending</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ confirmed }}</h2>
+            <p>Confirmed</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ completed }}</h2>
+            <p>Completed</p>
+        </div>
+
+        <div class="card">
+            <h2>{{ cancelled }}</h2>
+            <p>Cancelled</p>
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         BOOKING CALENDAR
+    ========================= -->
+
+    <div class="calendar-box">
+
+        <h2>📅 Booking Calendar</h2>
+
+        <div id="calendar"></div>
+
+    </div>
+
+
+    <!-- =========================
+         MONTHLY BOOKING CHART
+    ========================= -->
+
+    <div class="chart-box">
+
+        <h2>📊 Monthly Bookings</h2>
+
+        <canvas id="bookingChart"></canvas>
+
+    </div>
+
+
+    <!-- =========================
+         BOOKING LIST
+    ========================= -->
+
+    <h2 class="table-title">
+        Booking List
+    </h2>
+
+
+    <input
+        type="text"
+        id="search"
+        placeholder="Search Name, Email, Phone or Service..."
+        onkeyup="searchTable()">
+
+
+    <div class="table-wrapper">
+
+        <table id="bookingTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Service</th>
+                    <th>Date</th>
+                    <th>Message</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                    <th>Payment</th>
+                    <th>Receipt</th>
+                    <th>WhatsApp</th>
+                    <th>Email</th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+            {% if bookings %}
+
+                {% for booking in bookings %}
+
+                <tr>
+
+                    <!-- ID -->
+
+                    <td>
+                        {{ booking.id }}
+                    </td>
+
+
+                    <!-- NAME -->
+
+                    <td>
+                        {{ booking.name }}
+                    </td>
+
+
+                    <!-- EMAIL -->
+
+                    <td>
+                        {{ booking.email }}
+                    </td>
+
+
+                    <!-- PHONE -->
+
+                    <td>
+                        {{ booking.phone }}
+                    </td>
+
+
+                    <!-- SERVICE -->
+
+                    <td>
+                        {{ booking.service }}
+                    </td>
+
+
+                    <!-- DATE -->
+
+                    <td>
+                        {{ booking.booking_date }}
+                    </td>
+
+
+                    <!-- MESSAGE -->
+
+                    <td>
+                        {{ booking.message }}
+                    </td>
+
+
+                    <!-- STATUS -->
+
+                    <td>
+
+                        <form
+                            action="/status/{{ booking.id }}"
+                            method="POST">
+
+                            <select
+                                class="status-select"
+                                name="status">
+
+                                <option
+                                    value="Pending"
+                                    {% if booking.status == "Pending" %}
+                                    selected
+                                    {% endif %}>
+                                    Pending
+                                </option>
+
+
+                                <option
+                                    value="Confirmed"
+                                    {% if booking.status == "Confirmed" %}
+                                    selected
+                                    {% endif %}>
+                                    Confirmed
+                                </option>
+
+
+                                <option
+                                    value="Completed"
+                                    {% if booking.status == "Completed" %}
+                                    selected
+                                    {% endif %}>
+                                    Completed
+                                </option>
+
+
+                                <option
+                                    value="Cancelled"
+                                    {% if booking.status == "Cancelled" %}
+                                    selected
+                                    {% endif %}>
+                                    Cancelled
+                                </option>
+
+                            </select>
+
+
+                            <br>
+                            <br>
+
+
+                            <button
+                                type="submit"
+                                class="update-btn">
+
+                                <i class="fa-solid fa-pen"></i>
+                                Update
+
+                            </button>
+
+                        </form>
+
+                    </td>
+
+
+                    <!-- DELETE -->
+
+                    <td>
+
+                        <a
+                            href="/delete/{{ booking.id }}"
+                            class="delete-btn"
+                            onclick="return confirm('Delete this booking?')">
+
+                            <i class="fa-solid fa-trash"></i>
+                            Delete
+
+                        </a>
+
+                    </td>
+
+
+                    <!-- =========================
+                         PAYMENT
+                    ========================= -->
+
+                    <td>
+
+                        <a
+                            href="/pay/{{ booking.id }}"
+                            target="_blank"
+                            class="pay-btn">
+
+                            <i class="fa-solid fa-credit-card"></i>
+                            Pay
+
+                        </a>
+
+
+                        <br>
+                        <br>
+
+
+                        <!-- COPY PAYMENT LINK -->
+
+                        <button
+                            type="button"
+                            class="copy-payment-btn"
+                            data-payment-link="{{ request.url_root }}pay/{{ booking.id }}"
+                            onclick="copyPaymentLink(this.dataset.paymentLink)">
+
+                            <i class="fa-solid fa-link"></i>
+                            Copy Link
+
+                        </button>
+
+                    </td>
+
+
+                    <!-- =========================
+                         RECEIPT
+                    ========================= -->
+
+                    <td>
+
+                        <a
+                            href="/receipt/{{ booking.id }}"
+                            target="_blank"
+                            class="receipt-btn">
+
+                            <i class="fa-solid fa-file-pdf"></i>
+                            Receipt
+
+                        </a>
+
+                    </td>
+
+
+                    <!-- =========================
+                         WHATSAPP PAYMENT
+                    ========================= -->
+
+                    <td>
+
+                        <button
+                            type="button"
+                            class="whatsapp-btn"
+
+                            data-phone="{{ booking.phone }}"
+                            data-name="{{ booking.name }}"
+                            data-service="{{ booking.service }}"
+                            data-payment-link="{{ request.url_root }}pay/{{ booking.id }}"
+
+                            onclick="sendWhatsApp(this)">
+
+                            <i class="fa-brands fa-whatsapp"></i>
+                            Send Payment
+
+                        </button>
+
+                    </td>
+
+
+                    <!-- =========================
+                         EMAIL PAYMENT
+                    ========================= -->
+
+                    <td>
+
+                        <button
+                            type="button"
+                            class="email-btn"
+
+                            data-email="{{ booking.email }}"
+                            data-name="{{ booking.name }}"
+                            data-service="{{ booking.service }}"
+                            data-payment-link="{{ request.url_root }}pay/{{ booking.id }}"
+
+                            onclick="sendEmail(this)">
+
+                            <i class="fa-solid fa-envelope"></i>
+                            Send Payment
+
+                        </button>
+
+                    </td>
+
+
+                </tr>
+
+                {% endfor %}
+
+
+            {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="13"
+                        style="padding:25px;text-align:center;">
+
+                        No Booking Found
+
+                    </td>
+
+                </tr>
+
+            {% endif %}
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+
+<!-- =========================
+     JAVASCRIPT
+========================= -->
+
+<script>
+
+
+// =========================
+// SEARCH BOOKING
+// =========================
+
+function searchTable() {
+
+    let input =
+        document.getElementById("search");
+
+    let filter =
+        input.value.toUpperCase();
+
+    let table =
+        document.getElementById("bookingTable");
+
+    let tr =
+        table.getElementsByTagName("tr");
+
+
+    for (let i = 1; i < tr.length; i++) {
+
+        let td =
+            tr[i].getElementsByTagName("td");
+
+        let found = false;
+
+
+        for (let j = 1; j <= 4; j++) {
+
+            if (td[j]) {
+
+                let txt =
+                    td[j].textContent ||
+                    td[j].innerText;
+
+
+                if (
+                    txt
+                    .toUpperCase()
+                    .indexOf(filter) > -1
+                ) {
+
+                    found = true;
+
+                }
+
+            }
+
+        }
+
+
+        tr[i].style.display =
+            found ? "" : "none";
+
+    }
+
+}
+
+
+
+// =========================
+// COPY PAYMENT LINK
+// =========================
+
+function copyPaymentLink(link) {
+
+    navigator.clipboard
+        .writeText(link)
+
+        .then(function () {
+
+            alert(
+                "Payment link copied successfully!"
+            );
+
+        })
+
+        .catch(function () {
+
+            alert(
+                "Unable to copy payment link."
+            );
+
+        });
+
+}
+
+
+
+// =========================
+// SEND PAYMENT ON WHATSAPP
+// =========================
+
+function sendWhatsApp(button) {
+
+    let phone =
+        button.dataset.phone.replace(/\D/g, "");
+
+    let name =
+        button.dataset.name;
+
+    let service =
+        button.dataset.service;
+
+    let paymentLink =
+        button.dataset.paymentLink;
+
+
+    // If number is 10 digits, add India code
+
+    if (phone.length === 10) {
+
+        phone = "91" + phone;
+
+    }
+
+
+    let message =
+        "Hello " + name +
+        ",\n\n" +
+
+        "Your " + service +
+        " booking is confirmed." +
+
+        "\n\nPlease complete your booking payment using the link below:" +
+
+        "\n" + paymentLink +
+
+        "\n\nThank you," +
+
+        "\nRadhika Makeup Studio";
+
+
+    let whatsappURL =
+        "https://wa.me/" +
+        phone +
+        "?text=" +
+        encodeURIComponent(message);
+
+
+    window.open(
+        whatsappURL,
+        "_blank"
+    );
+
+}
+
+
+
+// =========================
+// SEND PAYMENT BY EMAIL
+// =========================
+
+function sendEmail(button) {
+
+    let email =
+        button.dataset.email;
+
+    let name =
+        button.dataset.name;
+
+    let service =
+        button.dataset.service;
+
+    let paymentLink =
+        button.dataset.paymentLink;
+
+
+    let subject =
+        "Payment Link - Radhika Makeup Studio";
+
+
+    let body =
+        "Hello " + name +
+        ",\n\n" +
+
+        "Your " + service +
+        " booking is confirmed." +
+
+        "\n\nPlease complete your booking payment using the link below:" +
+
+        "\n" + paymentLink +
+
+        "\n\nThank you," +
+
+        "\nRadhika Makeup Studio";
+
+
+    let mailURL =
+        "mailto:" +
+        email +
+        "?subject=" +
+        encodeURIComponent(subject) +
+        "&body=" +
+        encodeURIComponent(body);
+
+
+    window.location.href =
+        mailURL;
+
+}
+
+
+
+// =========================
+// PAGE LOAD
+// =========================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function () {
+
+
+        // =========================
+        // CHART
+        // =========================
+
+        const ctx =
+            document.getElementById(
+                "bookingChart"
+            );
+
+
+        new Chart(ctx, {
+
+            type: "bar",
+
+
+            data: {
+
+                labels: [
+                    "Jan",
+                    "Feb",
+                    "Mar",
+                    "Apr",
+                    "May",
+                    "Jun",
+                    "Jul",
+                    "Aug",
+                    "Sep",
+                    "Oct",
+                    "Nov",
+                    "Dec"
+                ],
+
+
+                datasets: [{
+
+                    label:
+                        "Monthly Bookings",
+
+
+                    data: [
+                        12,
+                        19,
+                        8,
+                        15,
+                        22,
+                        18,
+                        25,
+                        14,
+                        17,
+                        23,
+                        28,
+                        20
+                    ],
+
+
+                    backgroundColor:
+                        "#d63384",
+
+
+                    borderRadius:
+                        8
+
+                }]
+
+            },
+
+
+            options: {
+
+                responsive: true,
+
+
+                plugins: {
+
+                    legend: {
+
+                        display: false
+
+                    }
+
+                },
+
+
+                scales: {
+
+                    y: {
+
+                        beginAtZero: true
+
+                    }
+
+                }
+
+            }
+
+        });
+
+
+
+        // =========================
+        // CALENDAR
+        // =========================
+
+        var calendarEl =
+            document.getElementById(
+                "calendar"
+            );
+
+
+        var calendar =
+            new FullCalendar.Calendar(
+
+                calendarEl,
+
+                {
+
+                    initialView:
+                        "dayGridMonth",
+
+
+                    height:
+                        600,
+
+
+                    headerToolbar: {
+
+                        left:
+                            "prev,next today",
+
+                        center:
+                            "title",
+
+                        right:
+                            "dayGridMonth,timeGridWeek"
+
+                    },
+
+
+                    events: [
+
+                        {
+
+                            title:
+                                "Bridal Makeup",
+
+                            start:
+                                "2026-07-30"
+
+                        },
+
+
+                        {
+
+                            title:
+                                "Party Makeup",
+
+                            start:
+                                "2026-08-05"
+
+                        },
+
+
+                        {
+
+                            title:
+                                "Engagement Makeup",
+
+                            start:
+                                "2026-08-10"
+
+                        }
+
+                    ]
+
+                }
+
+            );
+
+
+        calendar.render();
+
+    }
+
+);
+
+</script>
+
+
+</body>
+
+</html>

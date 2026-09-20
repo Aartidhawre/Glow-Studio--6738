@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Review Management</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>Radhika Makeup</h2>
+
+<a href="/">
+<i class="fa-solid fa-house"></i>
+Website
+</a>
+
+<a href="/dashboard">
+<i class="fa-solid fa-chart-line"></i>
+Dashboard
+</a>
+
+<a href="/gallery">
+<i class="fa-solid fa-images"></i>
+Gallery
+</a>
+
+<a href="/reviews">
+<i class="fa-solid fa-star"></i>
+Reviews
+</a>
+
+<a href="/logout">
+<i class="fa-solid fa-right-from-bracket"></i>
+Logout
+</a>
+
+</div>
+
+<div class="main">
+
+<h1>Review Management</h1>
+
+<form method="POST">
+
+<input
+type="text"
+name="client_name"
+placeholder="Client Name"
+required>
+
+<br><br>
+
+<select
+name="rating"
+required>
+
+<option value="">Select Rating</option>
+
+<option value="5">⭐⭐⭐⭐⭐</option>
+
+<option value="4">⭐⭐⭐⭐</option>
+
+<option value="3">⭐⭐⭐</option>
+
+<option value="2">⭐⭐</option>
+
+<option value="1">⭐</option>
+
+</select>
+
+<br><br>
+
+<textarea
+name="review"
+placeholder="Write Review..."
+rows="5"
+required>
+
+</textarea>
+
+<br><br>
+
+<button
+class="update-btn"
+type="submit">
+
+Add Review
+
+</button>
+
+</form>
+
+<hr><br>
+
+<table>
+
+<thead>
+
+<tr>
+
+<th>ID</th>
+
+<th>Client</th>
+
+<th>Rating</th>
+
+<th>Review</th>
+
+<th>Action</th>
+
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for review in reviews %}
+
+<tr>
+
+<td>{{ review.id }}</td>
+
+<td>{{ review.client_name }}</td>
+
+<td>{{ review.rating }} ⭐</td>
+
+<td>{{ review.review }}</td>
+
+<td>
+
+<a
+href="/delete-review/{{ review.id }}"
+class="delete-btn"
+onclick="return confirm('Delete this review?')">
+
+Delete
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+</div>
+
+</body>
+
+</html>

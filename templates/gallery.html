@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport"
+content="width=device-width, initial-scale=1.0">
+
+<title>Gallery Management</title>
+
+<link rel="stylesheet"
+href="{{ url_for('static', filename='css/dashboard.css') }}">
+
+<link rel="preconnect"
+href="https://fonts.googleapis.com">
+
+<link rel="preconnect"
+href="https://fonts.gstatic.com"
+crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>Radhika Makeup</h2>
+
+<a href="/">
+<i class="fa-solid fa-house"></i>
+Website
+</a>
+
+<a href="/dashboard">
+<i class="fa-solid fa-chart-line"></i>
+Dashboard
+</a>
+
+<a href="/gallery">
+<i class="fa-solid fa-images"></i>
+Gallery
+</a>
+
+<a href="/reviews">
+<i class="fa-solid fa-star"></i>
+Reviews
+</a>
+
+<a href="/logout">
+<i class="fa-solid fa-right-from-bracket"></i>
+Logout
+</a>
+
+</div>
+
+
+<div class="main">
+
+<h1>Gallery Management</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+
+{% if messages %}
+
+{% for category,message in messages %}
+
+<div class="alert">
+
+{{ message }}
+
+</div>
+
+{% endfor %}
+
+{% endif %}
+
+{% endwith %}
+
+<form
+method="POST"
+enctype="multipart/form-data">
+
+<input
+type="file"
+name="image"
+required>
+
+<br><br>
+
+<select
+name="category"
+required>
+
+<option value="">Select Category</option>
+
+<option value="Bridal">Bridal</option>
+
+<option value="HD Makeup">HD Makeup</option>
+
+<option value="Party Makeup">Party Makeup</option>
+
+<option value="Reception">Reception</option>
+
+<option value="Engagement">Engagement</option>
+
+</select>
+
+<br><br>
+
+<button
+type="submit"
+class="update-btn">
+
+Upload Image
+
+</button>
+
+</form>
+
+<hr><br>
+
+<div class="gallery-grid">
+
+{% for image in images %}
+
+<div class="gallery-card">
+
+<img
+src="{{ url_for('static', filename='images/' + image.image) }}"
+alt="Gallery Image">
+
+<h3>
+
+{{ image.category }}
+
+</h3>
+
+<a
+href="/delete-image/{{ image.id }}"
+class="delete-btn"
+onclick="return confirm('Delete this image?')">
+
+Delete
+
+</a>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+</div>
+
+</body>
+
+</html>
